@@ -1,0 +1,74 @@
+#!/bin/bash
+
+username="admin"
+password="admin"
+
+mqtt_port=1883
+mqtt_tls_port=8883
+mqtt_websockets=8083
+
+# CONFIG 0 or 1
+enable_forwarding=1
+enable_tls=1
+enable_websockets=1
+
+touch /etc/mosquitto/passwd
+chmod 777 -R /etc/mosquitto
+
+printf "$password\n$password\n" | mosquitto_passwd -c /etc/mosquitto/passwd $username
+
+sleep 1
+ 
+sudo touch /etc/mosquitto/conf.d/default.conf
+sudo chown $USER:$USER -R /etc/mosquitto/conf.d/default.conf
+sudo echo -e "listener $mqtt_port 0.0.0.0" >> /etc/mosquitto/conf.d/default.conf
+
+if [ $enable_websockets -ge 1 ]; then
+    {
+        echo ""
+        echo "# WEBSOCKETS"
+        echo "listener $mqtt_websockets 0.0.0.0"
+        echo "protocol websockets"
+        echo "cafile /etc/mosquitto/ca_certificates/ca.crt"
+        echo "keyfile /etc/mosquitto/ca_certificates/server.key"
+        echo "certfile /etc/mosquitto/ca_certificates/server.pem"
+        echo "tls_version tlsv1.2"
+        echo "require_certificate false"
+        echo "allow_anonymous true"
+    } >> /etc/mosquitto/conf.d/default.conf
+fi
+
+if [ $enable_tls -ge 1 ]; then
+    sudo chmod 777 -R /etc/mosquitto/ca_certificates
+    {
+        echo ""
+        echo "# TLS"
+        echo "listener $mqtt_tls_port 0.0.0.0"
+        echo "cafile /etc/mosquitto/ca_certificates/ca.crt"
+        echo "keyfile /etc/mosquitto/ca_certificates/server.key"
+        echo "certfile /etc/mosquitto/ca_certificates/server.pem"
+        echo "tls_version tlsv1.2"
+        echo "require_certificate false"
+        echo "allow_anonymous true"
+    } >> /etc/mosquitto/conf.d/default.conf
+fi
+
+{
+    echo ""
+    echo "# Authentication"
+    echo "password_file /etc/mosquitto/passwd"
+    echo "allow_anonymous false"
+} >> /etc/mosquitto/conf.d/default.conf
+
+if [ $enable_forwarding -ge 1 ]; then
+    sudo ufw allow $mqtt_port/tcp
+    if [ $enable_tls -ge 1 ]; then
+        sudo ufw allow $mqtt_tls_port/tcp
+    fi
+    if [ $enable_websockets -ge 1 ]; then
+        sudo ufw allow $mqtt_websockets/tcp
+    fi
+fi
+
+sleep 2
+echo "Done!"

@@ -6,6 +6,6 @@ frontend:
   port: 8080
 mqtt:
   base_topic: leenedge/zigbee2mqtt
-  server: localhost
-  # user: admin
-  # password: pass1234
+  server: mqtt://mqttbroker
+  user: admin
+  password: admin

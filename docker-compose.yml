@@ -73,6 +73,20 @@ services:
     networks:
       - virt_network
 
+  mqtt:
+    container_name: mqttbroker
+    hostname: mqttbroker
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: src/mqtt/Dockerfile
+    ports:
+      - '0.0.0.0:8083:8083'
+      - '0.0.0.0:1883:1883'
+      - '0.0.0.0:8883:8883'
+    networks:
+      - virt_network
+
   leproxy:
     hostname: leproxy
     restart: unless-stopped

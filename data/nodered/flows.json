@@ -8,6 +8,37 @@
         "env": []
     },
     {
+        "id": "eea0d0124e3fb996",
+        "type": "mqtt-broker",
+        "name": "local-broker",
+        "broker": "mqttbroker",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
         "id": "ebfeda80b2efeee4",
         "type": "inject",
         "z": "f0c239b21ddcdb8c",
@@ -51,5 +82,26 @@
         "x": 440,
         "y": 180,
         "wires": []
+    },
+    {
+        "id": "114381d5d8242077",
+        "type": "mqtt in",
+        "z": "f0c239b21ddcdb8c",
+        "name": "",
+        "topic": "leenedge/zigbee2mqtt/#",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eea0d0124e3fb996",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "5bd07ebdc572cb34"
+            ]
+        ]
     }
 ]

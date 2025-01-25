@@ -1,4 +1,3 @@
-data/zigbee2mqtt/configuration.yaml
 data/zigbee2mqtt/coordinator_backup.json
 data/zigbee2mqtt/database.db
 data/zigbee2mqtt/state.json
