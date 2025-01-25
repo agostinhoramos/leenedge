@@ -1,0 +1,11 @@
+version: 4
+homeassistant:
+  enabled: false
+frontend:
+  enabled: true
+  port: 8080
+mqtt:
+  base_topic: leenedge/zigbee2mqtt
+  server: localhost
+  # user: admin
+  # password: pass1234

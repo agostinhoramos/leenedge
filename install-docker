@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "==> Updating packages"
+sudo apt update
+sudo apt upgrade -y
+
+echo "==> Installing Docker"
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+rm get-docker.sh
+
+echo "==> Checking if 'docker' group already exists"
+if ! getent group docker > /dev/null; then
+  sudo groupadd docker
+fi
+
+echo "==> Adding the current user to the 'docker' group"
+sudo usermod -aG docker $USER
+
+echo "==> Checking Docker version"
+docker --version
+
+echo "==> Installing Docker Compose"
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+echo "==> Making Docker Compose executable"
+sudo chmod +x /usr/local/bin/docker-compose
+
+echo "==> Checking Docker Compose version"
+docker-compose --version
+
+echo "==> Installation complete. Please restart the system to apply group changes."

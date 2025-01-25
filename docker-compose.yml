@@ -1,0 +1,57 @@
+services:
+  # thingsboard:
+  #   image: thingsboard/tb-postgres:3.9.0
+  #   container_name: thingsboard
+  #   restart: always
+  #   ports:
+  #     - "0.0.0.0:8080:9090"        # HTTP access
+  #     - "1883:1883"                # MQTT
+  #     - "7070:7070"                # CoAP
+  #     - "5683-5688:5683-5688/udp"  # LwM2M
+  #   environment:
+  #     TB_QUEUE_TYPE: rabbitmq
+  #     TB_QUEUE_RABBIT_MQ_USERNAME: 'RABBITMQ_USER'
+  #     TB_QUEUE_RABBIT_MQ_PASSWORD: 'RABBITMQ_PASS'
+  #     TB_QUEUE_RABBIT_MQ_HOST: rabbitmq
+  #     TB_QUEUE_RABBIT_MQ_PORT: 5672
+  #   volumes:
+  #     - ~/.mytb-data:/data
+  #     - ~/.mytb-logs:/var/log/thingsboard
+  #   networks:
+  #     - virt_network
+  #   depends_on:
+  #     - rabbitmq
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    devices:
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./data/zigbee2mqtt:/app/data"
+      - "/run/udev:/run/udev:ro"
+    environment:
+      TZ: 'Europe/Lisbon'
+    networks:
+      - virt_network
+
+  # rabbitmq:
+  #   image: rabbitmq:3.8-management
+  #   container_name: rabbitmq
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5672:5672"               # AMQP
+  #     - "0.0.0.0:15672:15672"     # Management UI
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: 'RABBITMQ_USER'
+  #     RABBITMQ_DEFAULT_PASS: 'RABBITMQ_PASS'
+  #     RABBITMQ_DEFAULT_VHOST: /
+  #   networks:
+  #     - virt_network
+
+networks:
+  virt_network:
+    driver: bridge
