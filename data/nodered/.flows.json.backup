@@ -1,5 +1,13 @@
 [
     {
+        "id": "05e612b92c6b1631",
+        "type": "tab",
+        "label": "LeenEdgeJoinZigbeeToMqtt",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "f0c239b21ddcdb8c",
         "type": "tab",
         "label": "Flow 1",
@@ -39,6 +47,1057 @@
         "sessionExpiry": ""
     },
     {
+        "id": "c62dcb6626d0a9ce",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 1",
+        "func": "return msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 480,
+        "wires": [
+            [
+                "9449f6334d60be38"
+            ]
+        ]
+    },
+    {
+        "id": "25a3f2bbb8feabcb",
+        "type": "debug",
+        "z": "05e612b92c6b1631",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "3eb99b8a05f83f35",
+        "type": "http request",
+        "z": "05e612b92c6b1631",
+        "name": "HTTP Request",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1560,
+        "y": 260,
+        "wires": [
+            [
+                "18ce2cda6102ee48"
+            ]
+        ]
+    },
+    {
+        "id": "b2ede8067f737147",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "SettingUp TB Device",
+        "func": "const THINGSBOARD_HOST = msg.template[\"host\"]\nconst ACCESS_TOKEN = msg.template[\"access_token\"]\n\nmsg.url = `${THINGSBOARD_HOST}/api/device`\nmsg.method = \"POST\"\nmsg.headers = {\n    \"Content-Type\": \"application/json\",\n    \"Authorization\": `Bearer ${ACCESS_TOKEN}`\n}\n\nmsg.payload = msg.req.params.device\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 480,
+        "wires": [
+            [
+                "3eb99b8a05f83f35"
+            ]
+        ],
+        "icon": "node-red/cog.svg"
+    },
+    {
+        "id": "9449f6334d60be38",
+        "type": "template",
+        "z": "05e612b92c6b1631",
+        "name": "TB ACCESS",
+        "field": "template",
+        "fieldType": "msg",
+        "format": "json",
+        "syntax": "mustache",
+        "template": "{\n    \"host\": \"http://thingsboard:9090\",\n    \"access_token\": \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAbGVlbmVkZ2UubG9jYWwiLCJ1c2VySWQiOiI3NDNmMGYwMC1kYmU4LTExZWYtODNlZi0xZGI4Njc0N2YxMmMiLCJzY29wZXMiOlsiVEVOQU5UX0FETUlOIl0sInNlc3Npb25JZCI6IjQyN2Y3ODY3LTIwNDctNGE4ZS05OTlhLTM5NjExZTU2YjZhMyIsImV4cCI6MTc0MDUwMDgwOCwiaXNzIjoidGhpbmdzYm9hcmQuaW8iLCJpYXQiOjE3Mzc5MDg4MDgsImZpcnN0TmFtZSI6IlRlbmFudCIsImVuYWJsZWQiOnRydWUsImlzUHVibGljIjpmYWxzZSwidGVuYW50SWQiOiI1YWFjYmJhMC1kYmU4LTExZWYtODNlZi0xZGI4Njc0N2YxMmMiLCJjdXN0b21lcklkIjoiMTM4MTQwMDAtMWRkMi0xMWIyLTgwODAtODA4MDgwODA4MDgwIn0.C9wihi1Sms2gUGoHedo3Z8Ykvbp2VlBqxjsLYhhFNw-HadumJXkli8bxejMwj8fmTTEI3n8f7YqV1MAsFLiQhg\"\n}",
+        "output": "json",
+        "x": 710,
+        "y": 480,
+        "wires": [
+            [
+                "198191d5064281bc"
+            ]
+        ]
+    },
+    {
+        "id": "198191d5064281bc",
+        "type": "switch",
+        "z": "05e612b92c6b1631",
+        "name": "SWITCH API",
+        "property": "req.params.reference",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "create_device",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "remove_device",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "device_telemetry",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 930,
+        "y": 720,
+        "wires": [
+            [
+                "b2ede8067f737147"
+            ],
+            [
+                "332d891ea28e3788"
+            ],
+            [
+                "8e91e67c97bf4dfa"
+            ]
+        ]
+    },
+    {
+        "id": "18ce2cda6102ee48",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 2",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 300,
+        "wires": [
+            [
+                "7ca2e771976dca9a",
+                "2f2397903ca42765",
+                "3196f87f1ba4c88e"
+            ]
+        ]
+    },
+    {
+        "id": "8204ad5868026c99",
+        "type": "mqtt in",
+        "z": "05e612b92c6b1631",
+        "name": "On Device Event",
+        "topic": "leenedge/zigbee2mqtt/bridge/event",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eea0d0124e3fb996",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 380,
+        "wires": [
+            [
+                "b5d5d2d8a298b84c"
+            ]
+        ]
+    },
+    {
+        "id": "b5d5d2d8a298b84c",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 3",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 160,
+        "y": 340,
+        "wires": [
+            [
+                "c23b8b9b603f6691"
+            ]
+        ]
+    },
+    {
+        "id": "c23b8b9b603f6691",
+        "type": "switch",
+        "z": "05e612b92c6b1631",
+        "name": "",
+        "property": "payload.type",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "device_joined",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 150,
+        "y": 300,
+        "wires": [
+            [
+                "584306aa5ce94609"
+            ]
+        ]
+    },
+    {
+        "id": "584306aa5ce94609",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "CreateDeviceController",
+        "func": "\nconst friendly_name = msg.payload.data.friendly_name\nconst ieee_address = msg.payload.data.ieee_address\n\nmsg = {\n    req: { \"params\": \n        { \n            \"reference\": \"create_device\", \n            \"device\": { \n                \"name\": `Sensor ${ieee_address}`, \n                \"type\": \"default\", \n                \"label\": `Sensor Address ${friendly_name}` \n            } \n        } \n    },\n    res: {\n        \"ieee_address\": ieee_address,\n        \"status\": \"tb_device_created\"\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 260,
+        "wires": [
+            [
+                "c62dcb6626d0a9ce"
+            ]
+        ]
+    },
+    {
+        "id": "8533a28c4d42ac53",
+        "type": "file in",
+        "z": "05e612b92c6b1631",
+        "name": "Read LeenEdge",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "utf8",
+        "allProps": false,
+        "x": 540,
+        "y": 1840,
+        "wires": [
+            [
+                "25a3f2bbb8feabcb"
+            ]
+        ]
+    },
+    {
+        "id": "a2a854e22259c8b8",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 1840,
+        "wires": [
+            [
+                "8533a28c4d42ac53"
+            ]
+        ]
+    },
+    {
+        "id": "4b0311921169fc37",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 5",
+        "func": "msg.payload = {\n    ...msg.payload, // Spread existing attributes\n    [msg.res.ieee_address]: {\n        ...(msg.payload[msg.res.ieee_address] || {}),\n        \"device_id\": msg.res.device_id\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 240,
+        "wires": [
+            [
+                "ef8a884c184f3574"
+            ]
+        ]
+    },
+    {
+        "id": "52ec81f0ce50b7eb",
+        "type": "file in",
+        "z": "05e612b92c6b1631",
+        "name": "Read LeenEdge",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "utf8",
+        "allProps": false,
+        "x": 1940,
+        "y": 160,
+        "wires": [
+            [
+                "47fc2c77f9666f4a"
+            ]
+        ]
+    },
+    {
+        "id": "7ca2e771976dca9a",
+        "type": "debug",
+        "z": "05e612b92c6b1631",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1540,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "20f9b8220f69d59f",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Get Device Credentials",
+        "func": "// Check if the required attributes are present\nif (\n    msg.template?.host &&\n    msg.template?.access_token &&\n    msg.payload?.id?.id\n) {\n    // Extract the necessary values\n    const THINGSBOARD_HOST = msg.template.host;\n    const ACCESS_TOKEN = msg.template.access_token;\n    const DEVICE_ID = msg.payload?.id?.id;\n\n    // Configure the request\n    msg.url = `${THINGSBOARD_HOST}/api/device/${DEVICE_ID}/credentials`;\n    msg.method = \"GET\";\n    msg.headers = {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": `Bearer ${ACCESS_TOKEN}`\n    };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1590,
+        "y": 460,
+        "wires": [
+            [
+                "63997903864a5ea3"
+            ]
+        ],
+        "icon": "node-red/cog.svg"
+    },
+    {
+        "id": "2f2397903ca42765",
+        "type": "switch",
+        "z": "05e612b92c6b1631",
+        "name": "Device Created?",
+        "property": "res.status",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "tb_device_created",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1570,
+        "y": 360,
+        "wires": [
+            [
+                "af4dd944b9291dca"
+            ]
+        ]
+    },
+    {
+        "id": "63997903864a5ea3",
+        "type": "http request",
+        "z": "05e612b92c6b1631",
+        "name": "HTTP Request",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1560,
+        "y": 500,
+        "wires": [
+            [
+                "525ec13c4aab85bb",
+                "e8775a9b18efa786"
+            ]
+        ]
+    },
+    {
+        "id": "f59745a89c0b9f6a",
+        "type": "debug",
+        "z": "05e612b92c6b1631",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "af4dd944b9291dca",
+        "type": "delay",
+        "z": "05e612b92c6b1631",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1540,
+        "y": 420,
+        "wires": [
+            [
+                "20f9b8220f69d59f"
+            ]
+        ]
+    },
+    {
+        "id": "255812ab6e445488",
+        "type": "file",
+        "z": "05e612b92c6b1631",
+        "name": "LeenEdge Database",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 1960,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ef8a884c184f3574",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Stringfy",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 1940,
+        "y": 280,
+        "wires": [
+            [
+                "255812ab6e445488"
+            ]
+        ]
+    },
+    {
+        "id": "47fc2c77f9666f4a",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1930,
+        "y": 200,
+        "wires": [
+            [
+                "4b0311921169fc37"
+            ]
+        ]
+    },
+    {
+        "id": "9262610982458d82",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Clear Database",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 1940,
+        "y": 360,
+        "wires": [
+            [
+                "255812ab6e445488"
+            ]
+        ]
+    },
+    {
+        "id": "525ec13c4aab85bb",
+        "type": "debug",
+        "z": "05e612b92c6b1631",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload.credentialsId",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1540,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "9872b675944f5cdd",
+        "type": "mqtt in",
+        "z": "05e612b92c6b1631",
+        "name": "zigbee2mqtt Device",
+        "topic": "leenedge/zigbee2mqtt/+",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eea0d0124e3fb996",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 660,
+        "wires": [
+            [
+                "2e90094b865fc17f"
+            ]
+        ]
+    },
+    {
+        "id": "5f6389e71c1f9302",
+        "type": "mqtt in",
+        "z": "05e612b92c6b1631",
+        "name": "On Remove Device Res",
+        "topic": "leenedge/zigbee2mqtt/bridge/response/device/remove",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "eea0d0124e3fb996",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 520,
+        "wires": [
+            [
+                "fd85d0e9795446e9"
+            ]
+        ]
+    },
+    {
+        "id": "dad601774969b1dd",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Delete IEEE Address",
+        "func": "// Check if the required property exists before attempting to delete it\nif (msg.res?.ieee_address && msg.payload?.[msg.res.ieee_address]) {\n    delete msg.payload[msg.res.ieee_address];\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1220,
+        "y": 800,
+        "wires": [
+            [
+                "7cbadf7542186cac"
+            ]
+        ]
+    },
+    {
+        "id": "c9c5a1fc2bd24398",
+        "type": "file in",
+        "z": "05e612b92c6b1631",
+        "name": "Read LeenEdge",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "utf8",
+        "allProps": false,
+        "x": 1200,
+        "y": 640,
+        "wires": [
+            [
+                "6c46a1766fdffd48"
+            ]
+        ]
+    },
+    {
+        "id": "085cfc9295804cde",
+        "type": "file",
+        "z": "05e612b92c6b1631",
+        "name": "LeenEdge Database",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 1220,
+        "y": 880,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7cbadf7542186cac",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Stringfy",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 1200,
+        "y": 840,
+        "wires": [
+            [
+                "085cfc9295804cde"
+            ]
+        ]
+    },
+    {
+        "id": "6c46a1766fdffd48",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1190,
+        "y": 680,
+        "wires": [
+            [
+                "c4a6397c5127baca",
+                "116e376a19d5feed"
+            ]
+        ]
+    },
+    {
+        "id": "332d891ea28e3788",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 8",
+        "func": "msg.res = {\n    ...msg.res,\n    \"ieee_address\": msg.payload.data.id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 600,
+        "wires": [
+            [
+                "c9c5a1fc2bd24398"
+            ]
+        ]
+    },
+    {
+        "id": "c4a6397c5127baca",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Delete Device",
+        "func": "// Check if the required attributes are present\nif (\n    msg.template?.host &&\n    msg.template?.access_token\n) {\n    // Extract the necessary values\n    const THINGSBOARD_HOST = msg.template.host;\n    const ACCESS_TOKEN = msg.template.access_token;\n    const DEVICE_ID = msg.payload[msg.res?.ieee_address]?.device_id\n\n    // Configure the request\n    msg.url = `${THINGSBOARD_HOST}/api/device/${DEVICE_ID}`;\n    msg.method = \"DELETE\";\n    msg.headers = {\n        \"Content-Type\": \"application/json\",\n        \"Authorization\": `Bearer ${ACCESS_TOKEN}`\n    };\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 680,
+        "wires": [
+            [
+                "2d9ab2e1e28289cc"
+            ]
+        ],
+        "icon": "node-red/cog.svg"
+    },
+    {
+        "id": "2d9ab2e1e28289cc",
+        "type": "http request",
+        "z": "05e612b92c6b1631",
+        "name": "HTTP Request",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1420,
+        "y": 720,
+        "wires": [
+            [
+                "f59745a89c0b9f6a"
+            ]
+        ]
+    },
+    {
+        "id": "116e376a19d5feed",
+        "type": "delay",
+        "z": "05e612b92c6b1631",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1180,
+        "y": 740,
+        "wires": [
+            [
+                "dad601774969b1dd"
+            ]
+        ]
+    },
+    {
+        "id": "fd85d0e9795446e9",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Remove Device Controller",
+        "func": "\nmsg = {\n    ...msg,\n    req: { \"params\": \n        { \n            \"reference\": \"remove_device\", \n        } \n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 210,
+        "y": 480,
+        "wires": [
+            [
+                "c62dcb6626d0a9ce"
+            ]
+        ]
+    },
+    {
+        "id": "2e90094b865fc17f",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Device Telemetry Controller",
+        "func": "const ieee_address = msg.topic.split('/').pop();\nconst data = msg.payload\n\nlet telemetry = {}\n\nif (ieee_address === \"0x00124b002512e998\"){\n    telemetry = {\n        battery: data?.battery,\n        battery_low: data?.baterry_low,\n        linkquality: data?.linkquality,\n        rain_status: data?.contact\n    }\n}\n\nmsg = {\n    ...msg,\n    req: {\n        params:\n        {\n            reference: \"device_telemetry\",\n        }\n    },\n    res: {\n        payload: telemetry\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 620,
+        "wires": [
+            [
+                "c62dcb6626d0a9ce"
+            ]
+        ]
+    },
+    {
+        "id": "68caa757375a465f",
+        "type": "http request",
+        "z": "05e612b92c6b1631",
+        "name": "HTTP Request",
+        "method": "use",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": true,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1200,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6b5ea9fe2ab1f58d",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "Get Device Credentials",
+        "func": "// Check if the required attributes are present\nif (\n    msg.template?.host\n) {\n\n    const ieee_address = msg.topic.split('/').pop();\n\n    // Extract the necessary values\n    const THINGSBOARD_HOST = msg.template.host;\n    const ACCESS_TOKEN = msg.payload[ieee_address].device_tk;\n\n    // Configure the request\n    msg.url = `${THINGSBOARD_HOST}/api/v1/${ACCESS_TOKEN}/telemetry`;\n    msg.method = \"POST\";\n    msg.headers = {\n        \"Content-Type\": \"application/json\"\n    }\n\n    msg.payload = msg.res.payload\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1230,
+        "y": 1020,
+        "wires": [
+            [
+                "68caa757375a465f"
+            ]
+        ],
+        "icon": "node-red/cog.svg"
+    },
+    {
+        "id": "3196f87f1ba4c88e",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 6",
+        "func": "msg.res = {\n    ...msg.res,\n    \"device_id\": msg.payload?.id?.id\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 120,
+        "wires": [
+            [
+                "52ec81f0ce50b7eb"
+            ]
+        ]
+    },
+    {
+        "id": "167429136d2a7e45",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 9",
+        "func": "msg.payload = {\n    ...msg.payload, // Spread existing attributes\n    [msg.res.ieee_address]: {\n        ...(msg.payload[msg.res.ieee_address] || {}),\n        \"device_tk\": msg.res.credentialsId\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 580,
+        "wires": [
+            [
+                "eb564bd6234b4661"
+            ]
+        ]
+    },
+    {
+        "id": "369a9796c2e48c51",
+        "type": "file in",
+        "z": "05e612b92c6b1631",
+        "name": "Read LeenEdge",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "utf8",
+        "allProps": false,
+        "x": 1940,
+        "y": 500,
+        "wires": [
+            [
+                "ccb5c6718eef9320"
+            ]
+        ]
+    },
+    {
+        "id": "6919ae0db1b30c3d",
+        "type": "file",
+        "z": "05e612b92c6b1631",
+        "name": "LeenEdge Database",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "utf8",
+        "x": 1960,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb564bd6234b4661",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Stringfy",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 1940,
+        "y": 620,
+        "wires": [
+            [
+                "6919ae0db1b30c3d"
+            ]
+        ]
+    },
+    {
+        "id": "ccb5c6718eef9320",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1930,
+        "y": 540,
+        "wires": [
+            [
+                "167429136d2a7e45"
+            ]
+        ]
+    },
+    {
+        "id": "16671a823e703a0b",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Clear Database",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{}",
+        "payloadType": "json",
+        "x": 1940,
+        "y": 700,
+        "wires": [
+            [
+                "6919ae0db1b30c3d"
+            ]
+        ]
+    },
+    {
+        "id": "e8775a9b18efa786",
+        "type": "function",
+        "z": "05e612b92c6b1631",
+        "name": "function 10",
+        "func": "msg.res = {\n    ...msg.res,\n    \"credentialsId\": msg.payload?.credentialsId\n}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 460,
+        "wires": [
+            [
+                "369a9796c2e48c51"
+            ]
+        ]
+    },
+    {
+        "id": "8e91e67c97bf4dfa",
+        "type": "file in",
+        "z": "05e612b92c6b1631",
+        "name": "Read LeenEdge",
+        "filename": "leenedge.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "utf8",
+        "allProps": false,
+        "x": 1200,
+        "y": 940,
+        "wires": [
+            [
+                "d36dfc8420577205"
+            ]
+        ]
+    },
+    {
+        "id": "d36dfc8420577205",
+        "type": "json",
+        "z": "05e612b92c6b1631",
+        "name": "JSON Parse",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1190,
+        "y": 980,
+        "wires": [
+            [
+                "6b5ea9fe2ab1f58d"
+            ]
+        ]
+    },
+    {
         "id": "ebfeda80b2efeee4",
         "type": "inject",
         "z": "f0c239b21ddcdb8c",
@@ -72,7 +1131,7 @@
         "type": "debug",
         "z": "f0c239b21ddcdb8c",
         "name": "debug 1",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -96,11 +1155,145 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 160,
+        "x": 140,
         "y": 280,
         "wires": [
             [
                 "5bd07ebdc572cb34"
+            ]
+        ]
+    },
+    {
+        "id": "dcb08ae358a5efde",
+        "type": "mqtt out",
+        "z": "f0c239b21ddcdb8c",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eea0d0124e3fb996",
+        "x": 590,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "e0d262b74f73af85",
+        "type": "inject",
+        "z": "f0c239b21ddcdb8c",
+        "name": "Enable Join",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/request/permit_join",
+        "payload": "{\"value\":true}",
+        "payloadType": "json",
+        "x": 130,
+        "y": 440,
+        "wires": [
+            [
+                "dcb08ae358a5efde"
+            ]
+        ]
+    },
+    {
+        "id": "89c99de2c43ced33",
+        "type": "inject",
+        "z": "f0c239b21ddcdb8c",
+        "name": "Disable Join",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/response/permit_join ",
+        "payload": "{\"data\":{\"time\":0},\"status\":\"ok\",\"transaction\":\"3s21m-1\"}",
+        "payloadType": "json",
+        "x": 130,
+        "y": 480,
+        "wires": [
+            [
+                "dcb08ae358a5efde"
+            ]
+        ]
+    },
+    {
+        "id": "3fa825886d97c4d7",
+        "type": "inject",
+        "z": "f0c239b21ddcdb8c",
+        "name": "44 Join",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/event",
+        "payload": "{\"data\":{\"friendly_name\":\"0x00124b002512e998\",\"ieee_address\":\"0x00124b002512e998\"},\"type\":\"device_joined\"}",
+        "payloadType": "json",
+        "x": 110,
+        "y": 540,
+        "wires": [
+            [
+                "dcb08ae358a5efde"
+            ]
+        ]
+    },
+    {
+        "id": "b8c0ca667ecd0c07",
+        "type": "inject",
+        "z": "f0c239b21ddcdb8c",
+        "name": "44 remove",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/response/device/remove",
+        "payload": "{\"data\":{\"block\":false,\"force\":true,\"id\":\"0x00124b002512e998\"},\"status\":\"ok\",\"transaction\":\"e0b4t-2\"}",
+        "payloadType": "json",
+        "x": 120,
+        "y": 600,
+        "wires": [
+            [
+                "dcb08ae358a5efde"
             ]
         ]
     }

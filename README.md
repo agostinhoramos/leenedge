@@ -16,6 +16,9 @@
 - `sudo chown -R 1000:1000 ~/.mynr-data`
 - `sudo chmod -R 755 ~/.mynr-data`
 
+- `User: tenant@leenedge.local`
+- `Pass: pass1234`
+
 
 System Administrator: sysadmin@thingsboard.org / sysadmin
 Tenant Administrator: tenant@thingsboard.org / tenant
