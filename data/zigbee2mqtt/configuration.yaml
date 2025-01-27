@@ -9,3 +9,8 @@ mqtt:
   server: mqtt://mqttbroker
   user: admin
   password: admin
+devices:
+  '0x00124b002512e998':
+    friendly_name: '0x00124b002512e998'
+  '0x00124b0025455781':
+    friendly_name: '0x00124b0025455781'
