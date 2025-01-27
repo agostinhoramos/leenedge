@@ -590,7 +590,7 @@
         "type": "debug",
         "z": "05e612b92c6b1631",
         "name": "debug 5",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -1094,6 +1094,82 @@
         "wires": [
             [
                 "6b5ea9fe2ab1f58d"
+            ]
+        ]
+    },
+    {
+        "id": "0b8390d6ab45f885",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Enable Join Devices 4s",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/request/permit_join",
+        "payload": "{   \"value\": true,   \"time\": 254}",
+        "payloadType": "json",
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "1d3ce37c76aa315e"
+            ]
+        ]
+    },
+    {
+        "id": "1d3ce37c76aa315e",
+        "type": "mqtt out",
+        "z": "05e612b92c6b1631",
+        "name": "Zigbee Adapter",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eea0d0124e3fb996",
+        "x": 460,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "4073d2984490510f",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Disable Join Devices",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/request/permit_join",
+        "payload": "{   \"value\": false,   \"time\": 0}",
+        "payloadType": "json",
+        "x": 190,
+        "y": 900,
+        "wires": [
+            [
+                "1d3ce37c76aa315e"
             ]
         ]
     },

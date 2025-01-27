@@ -6,22 +6,19 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true 
+    depends_on:
+      - kafka
     ports:
       - "9090:9090"                # HTTP access
       - "1883"                     # MQTT
       - "7070:7070"                # CoAP
       - "5683-5688:5683-5688/udp"  # LwM2M
     environment:
-      TB_QUEUE_TYPE: rabbitmq
-      TB_QUEUE_RABBIT_MQ_USERNAME: 'RABBITMQ_USER'
-      TB_QUEUE_RABBIT_MQ_PASSWORD: 'RABBITMQ_PASS'
-      TB_QUEUE_RABBIT_MQ_HOST: 'rabbitmq'
-      TB_QUEUE_RABBIT_MQ_PORT: 5672
+      TB_QUEUE_TYPE: kafka
+      TB_KAFKA_SERVERS: kafka:9094
     volumes:
       - ~/.mytb-data:/data
       - ~/.mytb-logs:/var/log/thingsboard
-    depends_on:
-      - rabbitmq
     networks:
       - virt_network
 
@@ -31,16 +28,13 @@ services:
     container_name: nodered
     restart: unless-stopped
     stdin_open: true
-    tty: true 
+    tty: true
+    depends_on:
+      - mqtt
     ports:
       - "1880:1880"                # UI
     volumes:
       - ./data/nodered:/data
-    depends_on:
-      - thingsboard
-      - zigbee2mqtt
-      - rabbitmq
-      - mqtt
     networks:
       - virt_network
 
@@ -63,22 +57,37 @@ services:
     networks:
       - virt_network
 
-  rabbitmq:
-    image: rabbitmq:3.8-management
-    hostname: rabbitmq
-    container_name: rabbitmq
+  kafka:
+    image: bitnami/kafka:3.8.1
+    hostname: kafka
+    container_name: kafka
     restart: unless-stopped
     stdin_open: true
     tty: true 
     ports:
-      - "5672:5672"               # AMQP
-      - "15672:15672"             # Management UI
+      - 9092:9092 #to localhost:9092 from host machine
+      - 9093 #for Kraft
+      - 9094 #to kafka:9094 from within Docker network
     environment:
-      RABBITMQ_DEFAULT_USER: 'RABBITMQ_USER'
-      RABBITMQ_DEFAULT_PASS: 'RABBITMQ_PASS'
-      RABBITMQ_DEFAULT_VHOST: /
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_CFG_LISTENERS: "OUTSIDE://:9092,CONTROLLER://:9093,INSIDE://:9094"
+      KAFKA_CFG_ADVERTISED_LISTENERS: "OUTSIDE://localhost:9092,INSIDE://kafka:9094"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT,CONTROLLER:PLAINTEXT"
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: "INSIDE"
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_CFG_PROCESS_ROLES: "controller,broker" #KRaft
+      KAFKA_CFG_NODE_ID: "0" #KRaft
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER" #KRaft
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "0@kafka:9093" #KRaft
+
     networks:
       - virt_network
+
+    volumes:
+      - kafka-data:/bitnami
 
   mqtt:
     container_name: mqttbroker
@@ -111,6 +120,10 @@ services:
       - zigbee2mqtt
     networks:
       - virt_network
+
+volumes:
+  kafka-data:
+    driver: local
 
 networks:
   virt_network:

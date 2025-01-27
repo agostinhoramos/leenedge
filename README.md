@@ -2,7 +2,7 @@
 
 - `chmod +x install-docker`
 
-- `./install-docker`
+- `sudo ./install-docker`
 
 - `docker-compose up --build`
 
@@ -15,6 +15,12 @@
 
 - `sudo chown -R 1000:1000 ~/.mynr-data`
 - `sudo chmod -R 755 ~/.mynr-data`
+
+- `sudo rm -rf ~/.mytb-data`
+- `sudo rm -rf ~/.mytb-logs`
+
+- `mkdir -p ~/.mytb-data && sudo chown -R 799:799 ~/.mytb-data`
+- `mkdir -p ~/.mytb-logs && sudo chown -R 799:799 ~/.mytb-logs`
 
 - `User: tenant@leenedge.local`
 - `Pass: pass1234`

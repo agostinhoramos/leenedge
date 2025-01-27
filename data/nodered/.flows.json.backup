@@ -590,7 +590,7 @@
         "type": "debug",
         "z": "05e612b92c6b1631",
         "name": "debug 5",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -849,7 +849,7 @@
         "type": "function",
         "z": "05e612b92c6b1631",
         "name": "Device Telemetry Controller",
-        "func": "const ieee_address = msg.topic.split('/').pop();\nconst data = msg.payload\n\nlet telemetry = {}\n\nif (ieee_address === \"0x00124b002512e998\"){\n    telemetry = {\n        battery: data?.battery,\n        battery_low: data?.baterry_low,\n        linkquality: data?.linkquality,\n        rain_status: data?.contact\n    }\n}\n\nmsg = {\n    ...msg,\n    req: {\n        params:\n        {\n            reference: \"device_telemetry\",\n        }\n    },\n    res: {\n        payload: telemetry\n    }\n}\n\nreturn msg;",
+        "func": "const ieee_address = msg.topic.split('/').pop();\nconst data = msg.payload\n\nlet telemetry = {}\n\nif (ieee_address === \"0x00124b002512e998\"){\n    telemetry = {\n        battery: data?.battery,\n        battery_low: data?.battery_low,\n        linkquality: data?.linkquality,\n        rain_status: data?.contact\n    }\n}\n\nmsg = {\n    ...msg,\n    req: {\n        params:\n        {\n            reference: \"device_telemetry\",\n        }\n    },\n    res: {\n        payload: telemetry\n    }\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -1094,6 +1094,82 @@
         "wires": [
             [
                 "6b5ea9fe2ab1f58d"
+            ]
+        ]
+    },
+    {
+        "id": "0b8390d6ab45f885",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Enable Join Devices 4s",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/request/permit_join",
+        "payload": "{   \"value\": true,   \"time\": 254}",
+        "payloadType": "json",
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "1d3ce37c76aa315e"
+            ]
+        ]
+    },
+    {
+        "id": "1d3ce37c76aa315e",
+        "type": "mqtt out",
+        "z": "05e612b92c6b1631",
+        "name": "Zigbee Adapter",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "eea0d0124e3fb996",
+        "x": 460,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "4073d2984490510f",
+        "type": "inject",
+        "z": "05e612b92c6b1631",
+        "name": "Disable Join Devices",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "leenedge/zigbee2mqtt/bridge/request/permit_join",
+        "payload": "{ \"value\": false }",
+        "payloadType": "json",
+        "x": 190,
+        "y": 900,
+        "wires": [
+            [
+                "1d3ce37c76aa315e"
             ]
         ]
     },
